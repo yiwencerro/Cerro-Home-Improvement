@@ -224,17 +224,17 @@ function drawBubble(ctx,cx,cy,text,side){
 function getItems(chapter,leakFound){
   if(chapter==="painting"||chapter==="painted") return [
     {id:"paint_can",  x:72,  y:H-88, emoji:"🪣", label:"Paint!",      r:22},
-    {id:"speaker",    x:680, y:130,  emoji:"🎸", label:"Santana",     r:22},
-    {id:"phone",      x:720, y:210,  emoji:"📱", label:"Call Wife",   r:20},
-    {id:"before_after",x:400,y:75,  emoji:"🔀", label:"Before/After",r:20},
+    {id:"speaker",    x:650, y:280,  emoji:"🎸", label:"Santana",     r:22},
+    {id:"phone",      x:700, y:350,  emoji:"📱", label:"Call Wife",   r:20},
+    {id:"before_after",x:400,y:280, emoji:"🔀", label:"Before/After",r:20},
   ];
   if(["leak","investigation","boss"].includes(chapter)){
     const items=[
       {id:"check_toilet",x:150,y:H-200,emoji:"🚽",label:"Inspect",r:22},
       {id:"check_pipes", x:365,y:H-200,emoji:"🔧",label:"Inspect",r:22},
-      {id:"check_shower",x:620,y:120,  emoji:"🚿",label:"Inspect",r:22},
-      {id:"pizza",       x:75, y:190,  emoji:"🍕",label:"Pizza!",  r:20},
-      {id:"dr_pepper",   x:75, y:260,  emoji:"🥤",label:"Dr Pepper",r:20},
+      {id:"check_shower",x:580,y:300,  emoji:"🚿",label:"Inspect",r:22},
+      {id:"pizza",       x:75, y:280,  emoji:"🍕",label:"Pizza!",  r:20},
+      {id:"dr_pepper",   x:75, y:350,  emoji:"🥤",label:"Dr Pepper",r:20},
     ];
     if(leakFound) items.push({id:"seal_tile",x:580,y:200,emoji:"🛠️",label:"Seal It!",r:24});
     return items;
