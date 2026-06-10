@@ -478,17 +478,21 @@ function CarlosGame(){
         break;
       case "phone":
         converse([{who:"carlos",text:"Honey! The room is done! Miss you!"},{who:"michael",text:"He gets +50 energy every time."},{who:"yiwen",text:"Couple goals honestly."}]);
-        if(chapter==="painted"){
-          setTimeout(()=>{
-            setChapter("leak");setCarlosPos({x:300,y:310});
-            converse([{who:"yiwen",text:"CARLOS! WATER IS DRIPPING DOWN!"},{who:"carlos",text:"Wait... do I hear dripping?"},{who:"michael",text:"I hear something too..."}]);
-            setYiwenAct("detective");
-          },1800);
-        }
+        setTimeout(()=>{
+          setChapter("leak");setCarlosPos({x:300,y:310});
+          converse([{who:"yiwen",text:"CARLOS! WATER IS DRIPPING DOWN!"},{who:"carlos",text:"Wait... do I hear dripping?"},{who:"michael",text:"I hear something too..."}]);
+          setYiwenAct("detective");
+        },3200);
         break;
       case "before_after":
-        setShowBefore(v=>!v);
-        converse([{who:"carlos",text:"Look at this transformation!"},{who:"yiwen",text:"Stunning! Before and after!"}]);
+        setShowBefore(v=>{
+          const next=!v;
+          converse(next
+            ?[{who:"carlos",text:"Remember those orange walls?"},{who:"yiwen",text:"Hard to believe this is the same room!"}]
+            :[{who:"carlos",text:"Look at this transformation!"},{who:"michael",text:"Worth every tool I brought."},{who:"yiwen",text:"Stunning! Before and after!"}]
+          );
+          return next;
+        });
         break;
       case "check_toilet":
         setChapter("investigation");
