@@ -1,77 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>Carlos Home Improvement</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#111318;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial,sans-serif;padding:12px;gap:6px;}
-    #root{display:flex;flex-direction:column;align-items:center;gap:6px;}
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{background:#111318;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;font-family:Arial,sans-serif;padding:8px;gap:6px;overflow-x:hidden;}
+    #root{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;}
+    canvas{touch-action:none;display:block;width:100%;height:auto;}
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const {useState,useEffect,useRef} = React;
+const {useState,useEffect,useRef,useCallback} = React;
 const W=800,H=460;
 
-// ── Draw Carlos (scale 1.0 = full size) ───────────────────────────────────────
+// ─── Draw Carlos ──────────────────────────────────────────────────────────────
 function drawCarlos(ctx,x,y,facing,action){
   ctx.save();
-  const s=1.0;
-  if(facing==="left"){ctx.translate(x*2+36*s,0);ctx.scale(-1,1);}
-  ctx.fillStyle="rgba(0,0,0,0.13)";ctx.beginPath();ctx.ellipse(x+18*s,y+68*s,17*s,5*s,0,0,Math.PI*2);ctx.fill();
+  if(facing==="left"){ctx.translate(x*2+36,0);ctx.scale(-1,1);}
+  ctx.fillStyle="rgba(0,0,0,0.13)";ctx.beginPath();ctx.ellipse(x+18,y+68,17,5,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#3d2b1a";
-  ctx.beginPath();ctx.roundRect(x+4*s,y+59*s,14*s,8*s,[3,6,2,2]);ctx.fill();
-  ctx.beginPath();ctx.roundRect(x+20*s,y+59*s,14*s,8*s,[3,6,2,2]);ctx.fill();
+  ctx.beginPath();ctx.roundRect(x+4,y+59,14,8,[3,6,2,2]);ctx.fill();
+  ctx.beginPath();ctx.roundRect(x+20,y+59,14,8,[3,6,2,2]);ctx.fill();
   ctx.fillStyle="#4a4a4a";
-  ctx.beginPath();ctx.roundRect(x+6*s,y+39*s,11*s,23*s,2);ctx.fill();
-  ctx.beginPath();ctx.roundRect(x+19*s,y+39*s,11*s,23*s,2);ctx.fill();
-  ctx.fillStyle="#2a1a0a";ctx.fillRect(x+5*s,y+37*s,28*s,4*s);
-  ctx.fillStyle="#c8a020";ctx.fillRect(x+15*s,y+37*s,8*s,4*s);
-  ctx.fillStyle="#2c3e50";ctx.beginPath();ctx.roundRect(x+3*s,y+18*s,32*s,22*s,5);ctx.fill();
-  ctx.fillStyle="#1a252f";ctx.beginPath();ctx.moveTo(x+15*s,y+18*s);ctx.lineTo(x+19*s,y+28*s);ctx.lineTo(x+23*s,y+18*s);ctx.closePath();ctx.fill();
-  ctx.fillStyle="#2c3e50";ctx.beginPath();ctx.roundRect(x-3*s,y+18*s,9*s,22*s,4);ctx.fill();
-  if(action==="painting"){ctx.beginPath();ctx.roundRect(x+30*s,y+10*s,9*s,22*s,4);ctx.fill();}
-  else{ctx.beginPath();ctx.roundRect(x+30*s,y+18*s,9*s,22*s,4);ctx.fill();}
+  ctx.beginPath();ctx.roundRect(x+6,y+39,11,23,2);ctx.fill();
+  ctx.beginPath();ctx.roundRect(x+19,y+39,11,23,2);ctx.fill();
+  ctx.fillStyle="#2a1a0a";ctx.fillRect(x+5,y+37,28,4);
+  ctx.fillStyle="#c8a020";ctx.fillRect(x+15,y+37,8,4);
+  ctx.fillStyle="#2c3e50";ctx.beginPath();ctx.roundRect(x+3,y+18,32,22,5);ctx.fill();
+  ctx.fillStyle="#1a252f";ctx.beginPath();ctx.moveTo(x+15,y+18);ctx.lineTo(x+19,y+28);ctx.lineTo(x+23,y+18);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#2c3e50";ctx.beginPath();ctx.roundRect(x-3,y+18,9,22,4);ctx.fill();
+  if(action==="painting"){ctx.beginPath();ctx.roundRect(x+30,y+10,9,22,4);ctx.fill();}
+  else{ctx.beginPath();ctx.roundRect(x+30,y+18,9,22,4);ctx.fill();}
   ctx.fillStyle="#d4a055";
-  ctx.beginPath();ctx.arc(x+1*s,y+41*s,5*s,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+35*s,action==="painting"?y+32*s:y+41*s,5*s,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+1,y+41,5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+35,action==="painting"?y+32:y+41,5,0,Math.PI*2);ctx.fill();
   if(action==="painting"){
-    ctx.fillStyle="#777";ctx.fillRect(x+35*s,y+12*s,4*s,22*s);
-    ctx.fillStyle="#aaccff";ctx.beginPath();ctx.roundRect(x+30*s,y+10*s,14*s,8*s,3);ctx.fill();
+    ctx.fillStyle="#777";ctx.fillRect(x+35,y+12,4,22);
+    ctx.fillStyle="#aaccff";ctx.beginPath();ctx.roundRect(x+30,y+10,14,8,3);ctx.fill();
   }
-  ctx.fillStyle="#d4a055";ctx.beginPath();ctx.roundRect(x+14*s,y+11*s,10*s,9*s,2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(x+19*s,y+8*s,13*s,13*s,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="rgba(80,45,15,0.22)";ctx.beginPath();ctx.ellipse(x+19*s,y+14*s,8*s,4*s,0,0,Math.PI);ctx.fill();
-  ctx.fillStyle="#2a1a0a";ctx.beginPath();ctx.ellipse(x+19*s,y+2*s,12*s,7*s,0,Math.PI,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#8a9098";ctx.beginPath();ctx.ellipse(x+19*s,y-2*s,14*s,8*s,0,Math.PI,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(x+19*s,y-2*s,14*s,5*s,0,0,Math.PI);ctx.fill();
-  ctx.fillStyle="#6a7078";ctx.beginPath();ctx.ellipse(x+23*s,y+3*s,10*s,3*s,0.3,0,Math.PI);ctx.fill();
-  ctx.fillStyle="#555";ctx.beginPath();ctx.arc(x+19*s,y-9*s,2*s,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#ddd";ctx.font=`bold ${8*s}px Arial`;ctx.textAlign="center";ctx.fillText("C",x+19*s,y+1*s);
+  ctx.fillStyle="#d4a055";ctx.beginPath();ctx.roundRect(x+14,y+11,10,9,2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(x+19,y+8,13,13,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="rgba(80,45,15,0.22)";ctx.beginPath();ctx.ellipse(x+19,y+14,8,4,0,0,Math.PI);ctx.fill();
+  ctx.fillStyle="#2a1a0a";ctx.beginPath();ctx.ellipse(x+19,y+2,12,7,0,Math.PI,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#8a9098";ctx.beginPath();ctx.ellipse(x+19,y-2,14,8,0,Math.PI,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(x+19,y-2,14,5,0,0,Math.PI);ctx.fill();
+  ctx.fillStyle="#6a7078";ctx.beginPath();ctx.ellipse(x+23,y+3,10,3,0.3,0,Math.PI);ctx.fill();
+  ctx.fillStyle="#555";ctx.beginPath();ctx.arc(x+19,y-9,2,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#ddd";ctx.font="bold 8px Arial";ctx.textAlign="center";ctx.fillText("C",x+19,y+1);
   ctx.fillStyle="#fff";
-  ctx.beginPath();ctx.ellipse(x+14*s,y+8*s,3.2*s,3.2*s,0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(x+24*s,y+8*s,3.2*s,3.2*s,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(x+14,y+8,3.2,3.2,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(x+24,y+8,3.2,3.2,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#3a2a0a";
-  ctx.beginPath();ctx.arc(x+15*s,y+8*s,2*s,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+25*s,y+8*s,2*s,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+15,y+8,2,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+25,y+8,2,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#fff";
-  ctx.beginPath();ctx.arc(x+15.8*s,y+7*s,0.7*s,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+25.8*s,y+7*s,0.7*s,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#3a2a0a";ctx.lineWidth=1.8*s;
-  ctx.beginPath();ctx.arc(x+19*s,y+10*s,6*s,0.3,Math.PI-0.3);ctx.stroke();
+  ctx.beginPath();ctx.arc(x+15.8,y+7,0.7,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+25.8,y+7,0.7,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="#3a2a0a";ctx.lineWidth=1.8;
+  ctx.beginPath();ctx.arc(x+19,y+10,6,0.3,Math.PI-0.3);ctx.stroke();
   ctx.restore();
 }
 
-// ── Draw Michael (scaled smaller, s=0.72) ─────────────────────────────────────
+// ─── Draw Michael (s=0.72) ────────────────────────────────────────────────────
 function drawMichael(ctx,x,y,facing,tool){
-  ctx.save();
-  const s=0.72;
+  ctx.save();const s=0.72;
   if(facing==="left"){ctx.translate(x*2+30*s,0);ctx.scale(-1,1);}
   ctx.fillStyle="rgba(0,0,0,0.10)";ctx.beginPath();ctx.ellipse(x+15*s,y+66*s,14*s,4*s,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#1a1a1a";
@@ -88,30 +87,14 @@ function drawMichael(ctx,x,y,facing,tool){
   ctx.fillStyle="#e8c090";
   ctx.beginPath();ctx.arc(x+1*s,y+41*s,5*s,0,Math.PI*2);ctx.fill();
   ctx.beginPath();ctx.arc(x+31*s,raised?y+30*s:y+41*s,5*s,0,Math.PI*2);ctx.fill();
-  if(tool==="roller"){
-    ctx.fillStyle="#888";ctx.fillRect(x+31*s,y+12*s,4*s,20*s);
-    ctx.fillStyle="#ffaacc";ctx.beginPath();ctx.roundRect(x+27*s,y+10*s,12*s,7*s,3);ctx.fill();
-  }else if(tool==="flashlight"){
-    ctx.fillStyle="#666";ctx.fillRect(x+31*s,y+14*s,6*s,18*s);
-    ctx.fillStyle="#ffff99";ctx.beginPath();ctx.arc(x+34*s,y+14*s,6*s,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="rgba(255,255,160,0.12)";
-    ctx.beginPath();ctx.moveTo(x+28*s,y+10*s);ctx.lineTo(x-15*s,y-18*s);ctx.lineTo(x+75*s,y-18*s);ctx.closePath();ctx.fill();
-  }else if(tool==="wrench"){
-    ctx.strokeStyle="#888";ctx.lineWidth=3*s;
-    ctx.beginPath();ctx.moveTo(x+31*s,y+32*s);ctx.lineTo(x+31*s,y+14*s);ctx.stroke();
-    ctx.fillStyle="#aaa";ctx.beginPath();ctx.ellipse(x+31*s,y+12*s,7*s,5*s,0.4,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#777";ctx.beginPath();ctx.roundRect(x+27*s,y+30*s,8*s,5*s,2);ctx.fill();
-  }else if(tool==="sealer"){
-    ctx.fillStyle="#558";ctx.beginPath();ctx.roundRect(x+25*s,y+14*s,14*s,8*s,3);ctx.fill();
-    ctx.fillStyle="#888";ctx.fillRect(x+39*s,y+16*s,8*s,4*s);
-    ctx.fillStyle="#444";ctx.beginPath();ctx.roundRect(x+27*s,y+22*s,10*s,10*s,2);ctx.fill();
-  }
+  if(tool==="roller"){ctx.fillStyle="#888";ctx.fillRect(x+31*s,y+12*s,4*s,20*s);ctx.fillStyle="#ffaacc";ctx.beginPath();ctx.roundRect(x+27*s,y+10*s,12*s,7*s,3);ctx.fill();}
+  else if(tool==="flashlight"){ctx.fillStyle="#666";ctx.fillRect(x+31*s,y+14*s,6*s,18*s);ctx.fillStyle="#ffff99";ctx.beginPath();ctx.arc(x+34*s,y+14*s,6*s,0,Math.PI*2);ctx.fill();}
+  else if(tool==="wrench"){ctx.strokeStyle="#888";ctx.lineWidth=3*s;ctx.beginPath();ctx.moveTo(x+31*s,y+32*s);ctx.lineTo(x+31*s,y+14*s);ctx.stroke();ctx.fillStyle="#aaa";ctx.beginPath();ctx.ellipse(x+31*s,y+12*s,7*s,5*s,0.4,0,Math.PI*2);ctx.fill();}
+  else if(tool==="sealer"){ctx.fillStyle="#558";ctx.beginPath();ctx.roundRect(x+25*s,y+14*s,14*s,8*s,3);ctx.fill();ctx.fillStyle="#888";ctx.fillRect(x+39*s,y+16*s,8*s,4*s);}
   ctx.fillStyle="#e8c090";ctx.beginPath();ctx.roundRect(x+11*s,y+10*s,9*s,8*s,2);ctx.fill();
   ctx.beginPath();ctx.ellipse(x+16*s,y+6*s,13*s,15*s,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#111";
-  ctx.beginPath();ctx.moveTo(x+3*s,y);ctx.quadraticCurveTo(x+4*s,y-12*s,x+16*s,y-12*s);
-  ctx.quadraticCurveTo(x+28*s,y-10*s,x+29*s,y+2*s);ctx.lineTo(x+25*s,y+5*s);
-  ctx.quadraticCurveTo(x+22*s,y-3*s,x+16*s,y-4*s);ctx.quadraticCurveTo(x+7*s,y-2*s,x+5*s,y+5*s);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(x+3*s,y);ctx.quadraticCurveTo(x+4*s,y-12*s,x+16*s,y-12*s);ctx.quadraticCurveTo(x+28*s,y-10*s,x+29*s,y+2*s);ctx.lineTo(x+25*s,y+5*s);ctx.quadraticCurveTo(x+22*s,y-3*s,x+16*s,y-4*s);ctx.quadraticCurveTo(x+7*s,y-2*s,x+5*s,y+5*s);ctx.closePath();ctx.fill();
   ctx.beginPath();ctx.moveTo(x+10*s,y-10*s);ctx.quadraticCurveTo(x+13*s,y-18*s,x+18*s,y-10*s);ctx.closePath();ctx.fill();
   ctx.fillStyle="#fff";
   ctx.beginPath();ctx.ellipse(x+11*s,y+7*s,3*s,3*s,0,0,Math.PI*2);ctx.fill();
@@ -119,15 +102,13 @@ function drawMichael(ctx,x,y,facing,tool){
   ctx.fillStyle="#2a4a8a";
   ctx.beginPath();ctx.arc(x+12*s,y+7*s,2*s,0,Math.PI*2);ctx.fill();
   ctx.beginPath();ctx.arc(x+22*s,y+7*s,2*s,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#c8a070";ctx.lineWidth=1*s;ctx.beginPath();ctx.arc(x+16*s,y+11*s,3*s,0.6,Math.PI-0.6);ctx.stroke();
   ctx.strokeStyle="#8a5a3a";ctx.lineWidth=1.5*s;ctx.beginPath();ctx.arc(x+16*s,y+14*s,5*s,0.3,Math.PI-0.3);ctx.stroke();
   ctx.restore();
 }
 
-// ── Draw Yiwen (scaled smaller, s=0.68) ───────────────────────────────────────
+// ─── Draw Yiwen (s=0.68) ─────────────────────────────────────────────────────
 function drawYiwen(ctx,x,y,facing,action){
-  ctx.save();
-  const s=0.68;
+  ctx.save();const s=0.68;
   if(facing==="left"){ctx.translate(x*2+28*s,0);ctx.scale(-1,1);}
   ctx.fillStyle="rgba(0,0,0,0.10)";ctx.beginPath();ctx.ellipse(x+14*s,y+64*s,13*s,4*s,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#1a1a1a";
@@ -143,38 +124,20 @@ function drawYiwen(ctx,x,y,facing,action){
   if(camUp){ctx.beginPath();ctx.roundRect(x+25*s,y+8*s,7*s,18*s,3);ctx.fill();}
   else{ctx.beginPath();ctx.roundRect(x+25*s,y+15*s,7*s,22*s,3);ctx.fill();}
   ctx.fillStyle="#2a2a2a";ctx.beginPath();ctx.arc(x-1*s,y+38*s,5*s,0,Math.PI*2);ctx.fill();
-  if(action==="camera"){
-    ctx.fillStyle="#333";ctx.beginPath();ctx.roundRect(x+23*s,y+4*s,17*s,12*s,3);ctx.fill();
-    ctx.fillStyle="#7799bb";ctx.beginPath();ctx.arc(x+31*s,y+10*s,4*s,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x+31*s,y+10*s,1.5*s,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#2a2a2a";ctx.beginPath();ctx.arc(x+28*s,y+27*s,5*s,0,Math.PI*2);ctx.fill();
-  }else{
-    ctx.fillStyle="#2a2a2a";ctx.beginPath();ctx.arc(x+28*s,y+38*s,5*s,0,Math.PI*2);ctx.fill();
-  }
-  if(action==="detective"){
-    ctx.fillStyle="#3a2a1a";ctx.beginPath();ctx.roundRect(x+3*s,y-9*s,22*s,10*s,2);ctx.fill();
-    ctx.fillStyle="#2a1a0a";ctx.fillRect(x-1*s,y,30*s,4*s);
-    ctx.fillStyle="#c8a020";ctx.fillRect(x+6*s,y-4*s,16*s,3*s);
-  }
+  if(action==="camera"){ctx.fillStyle="#333";ctx.beginPath();ctx.roundRect(x+23*s,y+4*s,17*s,12*s,3);ctx.fill();ctx.fillStyle="#7799bb";ctx.beginPath();ctx.arc(x+31*s,y+10*s,4*s,0,Math.PI*2);ctx.fill();ctx.fillStyle="#2a2a2a";ctx.beginPath();ctx.arc(x+28*s,y+27*s,5*s,0,Math.PI*2);ctx.fill();}
+  else{ctx.fillStyle="#2a2a2a";ctx.beginPath();ctx.arc(x+28*s,y+38*s,5*s,0,Math.PI*2);ctx.fill();}
+  if(action==="detective"){ctx.fillStyle="#3a2a1a";ctx.beginPath();ctx.roundRect(x+3*s,y-9*s,22*s,10*s,2);ctx.fill();ctx.fillStyle="#2a1a0a";ctx.fillRect(x-1*s,y,30*s,4*s);ctx.fillStyle="#c8a020";ctx.fillRect(x+6*s,y-4*s,16*s,3*s);}
   ctx.fillStyle="#c87a50";ctx.beginPath();ctx.roundRect(x+9*s,y+9*s,9*s,8*s,2);ctx.fill();
   ctx.beginPath();ctx.ellipse(x+14*s,y+5*s,12*s,13*s,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#111";
-  ctx.beginPath();ctx.moveTo(x+2*s,y+5*s);ctx.quadraticCurveTo(x+2*s,y-9*s,x+14*s,y-10*s);
-  ctx.quadraticCurveTo(x+26*s,y-7*s,x+26*s,y+6*s);ctx.quadraticCurveTo(x+22*s,y+2*s,x+20*s,y+14*s);
-  ctx.lineTo(x+17*s,y+12*s);ctx.quadraticCurveTo(x+21*s,y,x+20*s,y-3*s);
-  ctx.quadraticCurveTo(x+14*s,y-5*s,x+5*s,y+2*s);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(x+2*s,y+3*s);ctx.quadraticCurveTo(x-2*s,y+10*s,x,y+20*s);
-  ctx.quadraticCurveTo(x+3*s,y+24*s,x+6*s,y+20*s);ctx.quadraticCurveTo(x+4*s,y+13*s,x+4*s,y+7*s);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(x+2*s,y+5*s);ctx.quadraticCurveTo(x+2*s,y-9*s,x+14*s,y-10*s);ctx.quadraticCurveTo(x+26*s,y-7*s,x+26*s,y+6*s);ctx.quadraticCurveTo(x+22*s,y+2*s,x+20*s,y+14*s);ctx.lineTo(x+17*s,y+12*s);ctx.quadraticCurveTo(x+21*s,y,x+20*s,y-3*s);ctx.quadraticCurveTo(x+14*s,y-5*s,x+5*s,y+2*s);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(x+2*s,y+3*s);ctx.quadraticCurveTo(x-2*s,y+10*s,x,y+20*s);ctx.quadraticCurveTo(x+3*s,y+24*s,x+6*s,y+20*s);ctx.quadraticCurveTo(x+4*s,y+13*s,x+4*s,y+7*s);ctx.closePath();ctx.fill();
   ctx.fillStyle="#fff";
   ctx.beginPath();ctx.ellipse(x+9*s,y+5*s,3.5*s,3.8*s,0,0,Math.PI*2);ctx.fill();
   ctx.beginPath();ctx.ellipse(x+19*s,y+5*s,3.5*s,3.8*s,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle="#2a1a0a";
   ctx.beginPath();ctx.arc(x+10*s,y+5*s,2.4*s,0,Math.PI*2);ctx.fill();
   ctx.beginPath();ctx.arc(x+20*s,y+5*s,2.4*s,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#fff";
-  ctx.beginPath();ctx.arc(x+10.8*s,y+4*s,0.8*s,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+20.8*s,y+4*s,0.8*s,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#a06040";ctx.lineWidth=1*s;ctx.beginPath();ctx.arc(x+14*s,y+10*s,3*s,0.5,Math.PI-0.5);ctx.stroke();
   ctx.strokeStyle="#8a4a2a";ctx.lineWidth=1.5*s;ctx.beginPath();ctx.arc(x+14*s,y+13*s,5.5*s,0.25,Math.PI-0.25);ctx.stroke();
   ctx.fillStyle="rgba(220,120,80,0.22)";
   ctx.beginPath();ctx.ellipse(x+7*s,y+13*s,4*s,2.5*s,0,0,Math.PI*2);ctx.fill();
@@ -182,25 +145,19 @@ function drawYiwen(ctx,x,y,facing,action){
   ctx.restore();
 }
 
-// ── Single speech bubble (positioned absolutely, no overlap) ─────────────────
+// ─── Speech bubble ────────────────────────────────────────────────────────────
 function drawBubble(ctx,cx,cy,text,side){
   if(!text)return;
-  ctx.save();
-  ctx.font="12px Arial";
+  ctx.save();ctx.font="12px Arial";
   const maxW=160,words=text.split(" ");
   const lines=[];let cur="";
-  words.forEach(w=>{
-    const t=cur?cur+" "+w:w;
-    if(ctx.measureText(t).width>maxW){lines.push(cur);cur=w;}else cur=t;
-  });
+  words.forEach(w=>{const t=cur?cur+" "+w:w;if(ctx.measureText(t).width>maxW){lines.push(cur);cur=w;}else cur=t;});
   if(cur)lines.push(cur);
   const lh=16,pad=10;
   const bw=Math.min(maxW+pad*2,Math.max(...lines.map(l=>ctx.measureText(l).width))+pad*2);
   const bh=lines.length*lh+pad*2;
-  const bxRaw=side==="right"?cx+16:cx-bw-16;
-  const byRaw=cy-bh-14;
-  const bx=Math.max(4,Math.min(W-bw-4,bxRaw));
-  const by=Math.max(4,byRaw);
+  const bx=Math.max(4,Math.min(W-bw-4,side==="right"?cx+16:cx-bw-16));
+  const by=Math.max(4,cy-bh-14);
   ctx.fillStyle="#fffef0";ctx.strokeStyle="#ccc";ctx.lineWidth=1.5;
   ctx.beginPath();ctx.roundRect(bx,by,bw,bh,8);ctx.fill();ctx.stroke();
   ctx.fillStyle="#fffef0";ctx.beginPath();
@@ -208,39 +165,34 @@ function drawBubble(ctx,cx,cy,text,side){
   else{ctx.moveTo(bx+bw-4,by+bh);ctx.lineTo(cx+4,cy-4);ctx.lineTo(bx+bw-18,by+bh);}
   ctx.fill();
   ctx.strokeStyle="#ccc";ctx.lineWidth=1;
-  if(side==="right"){
-    ctx.beginPath();ctx.moveTo(bx+4,by+bh+1);ctx.lineTo(cx+12,cy-3);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx+12,cy-3);ctx.lineTo(bx+18,by+bh+1);ctx.stroke();
-  }else{
-    ctx.beginPath();ctx.moveTo(bx+bw-4,by+bh+1);ctx.lineTo(cx+4,cy-3);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx+4,cy-3);ctx.lineTo(bx+bw-18,by+bh+1);ctx.stroke();
-  }
+  if(side==="right"){ctx.beginPath();ctx.moveTo(bx+4,by+bh+1);ctx.lineTo(cx+12,cy-3);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+12,cy-3);ctx.lineTo(bx+18,by+bh+1);ctx.stroke();}
+  else{ctx.beginPath();ctx.moveTo(bx+bw-4,by+bh+1);ctx.lineTo(cx+4,cy-3);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+4,cy-3);ctx.lineTo(bx+bw-18,by+bh+1);ctx.stroke();}
   ctx.fillStyle="#222";ctx.font="12px Arial";ctx.textAlign="left";
-  lines.forEach((line,i)=>ctx.fillText(line,bx+pad,by+pad+12+i*lh));
+  lines.forEach((l,i)=>ctx.fillText(l,bx+pad,by+pad+12+i*lh));
   ctx.restore();
 }
 
-// ── Items per chapter ─────────────────────────────────────────────────────────
+// ─── Items ────────────────────────────────────────────────────────────────────
 function getItems(chapter,leakFound){
-  if(chapter==="painting"||chapter==="painted") return [
-    {id:"paint_can",  x:72,  y:H-88, emoji:"🪣", label:"Paint!",      r:22},
-    {id:"speaker",    x:650, y:280,  emoji:"🎸", label:"Santana",     r:22},
-    {id:"phone",      x:700, y:350,  emoji:"📱", label:"Call Wife",   r:20},
-    {id:"before_after",x:400,y:280, emoji:"🔀", label:"Before/After",r:20},
+  if(chapter==="painting"||chapter==="painted")return[
+    {id:"paint_can",   x:72,  y:H-88, emoji:"🪣",label:"Paint!",      r:22},
+    {id:"speaker",     x:650, y:280,  emoji:"🎸",label:"Santana",     r:22},
+    {id:"phone",       x:700, y:350,  emoji:"📱",label:"Call Wife",   r:20},
+    {id:"before_after",x:400, y:280,  emoji:"🔀",label:"Before/After",r:20},
   ];
   if(["leak","investigation","boss"].includes(chapter)){
-    const items=[
+    const it=[
       {id:"check_toilet",x:150,y:H-200,emoji:"🚽",label:"Inspect",r:22},
       {id:"check_pipes", x:365,y:H-200,emoji:"🔧",label:"Inspect",r:22},
       {id:"check_shower",x:580,y:300,  emoji:"🚿",label:"Inspect",r:22},
       {id:"pizza",       x:75, y:280,  emoji:"🍕",label:"Pizza!",  r:20},
       {id:"dr_pepper",   x:75, y:350,  emoji:"🥤",label:"Dr Pepper",r:20},
     ];
-    if(leakFound) items.push({id:"seal_tile",x:580,y:200,emoji:"🛠️",label:"Seal It!",r:24});
-    return items;
+    if(leakFound)it.push({id:"seal_tile",x:560,y:200,emoji:"🛠️",label:"Seal It!",r:24});
+    return it;
   }
-  if(chapter==="victory") return [{id:"play_again",x:W/2,y:H/2+90,emoji:"🔄",label:"Play Again",r:28}];
-  return [];
+  if(chapter==="victory")return[{id:"play_again",x:W/2,y:H/2+90,emoji:"🔄",label:"Play Again",r:28}];
+  return[];
 }
 
 function drawItems(ctx,chapter,usedIds,leakFound,nearId){
@@ -248,21 +200,18 @@ function drawItems(ctx,chapter,usedIds,leakFound,nearId){
     const used=usedIds.has(item.id)&&!["before_after","speaker","play_again"].includes(item.id);
     if(used)return;
     const near=nearId===item.id;
-    // glow
-    if(near){ctx.strokeStyle="rgba(255,255,80,0.9)";ctx.lineWidth=3;}
-    else{ctx.strokeStyle="rgba(255,220,60,0.5)";ctx.lineWidth=2;}
+    ctx.strokeStyle=near?"rgba(255,255,80,0.95)":"rgba(255,220,60,0.5)";ctx.lineWidth=near?3:2;
     ctx.beginPath();ctx.arc(item.x,item.y,item.r+5,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle=near?"rgba(255,250,200,0.97)":"rgba(255,240,180,0.88)";
     ctx.beginPath();ctx.arc(item.x,item.y,item.r,0,Math.PI*2);ctx.fill();
-    ctx.font=`${item.r*1.0}px Arial`;ctx.textAlign="center";
+    ctx.font=`${item.r}px Arial`;ctx.textAlign="center";
     ctx.fillText(item.emoji,item.x,item.y+item.r*0.38);
     ctx.fillStyle=near?"#c00":"#444";ctx.font=`bold ${near?11:10}px Arial`;ctx.textAlign="center";
-    const hint=near?" [SPACE]":"";
-    ctx.fillText(item.label+hint,item.x,item.y+item.r+14);
+    ctx.fillText(item.label+(near?" ✓":""),item.x,item.y+item.r+14);
   });
 }
 
-// ── Rooms ─────────────────────────────────────────────────────────────────────
+// ─── Rooms ────────────────────────────────────────────────────────────────────
 function drawOrangeRoom(ctx){
   ctx.fillStyle="#e8a060";ctx.fillRect(0,0,W,H-80);
   ctx.strokeStyle="rgba(200,130,60,0.25)";ctx.lineWidth=1;
@@ -332,12 +281,26 @@ function drawLeakDrops(ctx,t){
   });
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// ─── Joystick renderer ────────────────────────────────────────────────────────
+function drawJoystick(ctx,base,stick,active){
+  if(!active)return;
+  ctx.save();
+  ctx.globalAlpha=0.35;
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(base.x,base.y,50,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=0.65;
+  ctx.fillStyle="#f0d060";ctx.beginPath();ctx.arc(stick.x,stick.y,28,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;
+  ctx.restore();
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 function CarlosGame(){
   const canvasRef=useRef(null);
   const keysRef=useRef({});
   const animRef=useRef(null);
   const spaceUsedRef=useRef(false);
+  // joystick touch state
+  const joystickRef=useRef({active:false,baseX:0,baseY:0,dx:0,dy:0,id:null});
 
   const [chapter,setChapter]=useState("painting");
   const [showBefore,setShowBefore]=useState(true);
@@ -351,184 +314,203 @@ function CarlosGame(){
   const [carlosAct,setCarlosAct]=useState("idle");
   const [yiwenAct,setYiwenAct]=useState("camera");
   const [nearItem,setNearItem]=useState(null);
-  // followers lag behind
-  const michaelTargetRef=useRef({x:370,y:330});
-  const yiwenTargetRef=useRef({x:240,y:335});
-  const [michaelPos,setMichaelPos]=useState({x:370,y:330});
-  const [yiwenPos,setYiwenPos]=useState({x:240,y:335});
-
-  // Sequential bubble queue: array of {who, text}
+  const nearItemRef=useRef(null);
+  const michaelTargetRef=useRef({x:248,y:334});
+  const yiwenTargetRef=useRef({x:220,y:338});
+  const [michaelPos,setMichaelPos]=useState({x:248,y:334});
+  const [yiwenPos,setYiwenPos]=useState({x:220,y:338});
   const [bubbleQueue,setBubbleQueue]=useState([]);
   const [activeBubble,setActiveBubble]=useState(null);
   const bubbleTimerRef=useRef(null);
+  // joystick render state
+  const [joyRender,setJoyRender]=useState({active:false,bx:0,by:0,sx:0,sy:0});
+
+  const chapterRef=useRef("painting");
+  const leakFoundRef=useRef(false);
+  useEffect(()=>{chapterRef.current=chapter;},[chapter]);
+  useEffect(()=>{leakFoundRef.current=leakFound;},[leakFound]);
 
   const michaelTool=chapter==="painting"?"roller":["leak","investigation"].includes(chapter)?"flashlight":chapter==="boss"?"wrench":chapter==="victory"?"sealer":"none";
 
-  // enqueue a conversation — array of {who,text}
-  const converse=(lines)=>{
-    setBubbleQueue(lines);
-  };
+  const converse=useCallback(lines=>{setBubbleQueue(lines);},[]);
 
-  // bubble sequencer
   useEffect(()=>{
     if(bubbleQueue.length===0){setActiveBubble(null);return;}
-    const [first,...rest]=bubbleQueue;
+    const[first,...rest]=bubbleQueue;
     setActiveBubble(first);
-    bubbleTimerRef.current=setTimeout(()=>{
-      setBubbleQueue(rest);
-    },2600);
+    bubbleTimerRef.current=setTimeout(()=>setBubbleQueue(rest),2600);
     return()=>clearTimeout(bubbleTimerRef.current);
   },[bubbleQueue]);
 
-  // keyboard
+  // update nearItemRef when nearItem state changes
+  useEffect(()=>{nearItemRef.current=nearItem;},[nearItem]);
+
+  const handleItem=useCallback(id=>{
+    if(!id)return;
+    setUsedBtns(prev=>new Set([...prev,id]));
+    switch(id){
+      case "paint_can":setCarlosAct("painting");setPainting(true);converse([{who:"carlos",text:"Alright! Walls won't paint themselves!"},{who:"michael",text:"I have three extra rollers ready!"},{who:"yiwen",text:"I'll do the touch-ups perfectly!"}]);break;
+      case "speaker":converse([{who:"carlos",text:"Santana makes me unstoppable!"},{who:"michael",text:"Everyone works faster with this!"},{who:"yiwen",text:"I am dancing AND working!"}]);break;
+      case "phone":
+        converse([{who:"carlos",text:"Honey! The room is done! Miss you!"},{who:"michael",text:"He gets +50 energy every time."},{who:"yiwen",text:"Couple goals honestly."}]);
+        setTimeout(()=>{setChapter("leak");setCarlosPos({x:300,y:310});converse([{who:"yiwen",text:"CARLOS! WATER IS DRIPPING DOWN!"},{who:"carlos",text:"Wait... do I hear dripping?"},{who:"michael",text:"I hear something too..."}]);setYiwenAct("detective");},3200);break;
+      case "before_after":setShowBefore(v=>{const n=!v;converse(n?[{who:"carlos",text:"Remember those orange walls?"},{who:"yiwen",text:"Hard to believe same room!"}]:[{who:"carlos",text:"Look at this transformation!"},{who:"michael",text:"Worth every tool I brought."},{who:"yiwen",text:"Stunning! Before and after!"}]);return n;});break;
+      case "check_toilet":setChapter("investigation");converse([{who:"carlos",text:"Toilet looks completely fine..."},{who:"michael",text:"Water lines clear here."},{who:"yiwen",text:"My theory: NOT the toilet."}]);break;
+      case "check_pipes":setChapter("investigation");converse([{who:"carlos",text:"Pipes seem totally normal..."},{who:"michael",text:"Let me shine all three flashlights."},{who:"yiwen",text:"Hmm. Suspicious pipes though."}]);break;
+      case "check_shower":converse([{who:"carlos",text:"THE TILE! A gap in the shower tile! THAT IS the leak!"},{who:"yiwen",text:"I KNEW it was a mystery!"},{who:"michael",text:"Elementary!"}]);setLeakFound(true);setChapter("boss");setYiwenAct("detective");break;
+      case "pizza":converse([{who:"yiwen",text:"PIZZA BREAK! Energy fully restored!"},{who:"carlos",text:"Back in action!"},{who:"michael",text:"I also brought backup snacks."}]);break;
+      case "dr_pepper":converse([{who:"michael",text:"DIET DR PEPPER! MAXIMUM ENERGY!"},{who:"carlos",text:"Michael is now FULLY CHARGED!"},{who:"yiwen",text:"He is basically vibrating right now."}]);break;
+      case "seal_tile":setCarlosAct("idle");converse([{who:"carlos",text:"Applying tile sealer... done. Leak sealed."},{who:"michael",text:"Perfect repair. As expected."},{who:"yiwen",text:"WE DID IT! Photo for the album!"}]);setYiwenAct("camera");setTimeout(()=>setChapter("victory"),2200);break;
+      case "play_again":setChapter("painting");setPaintPct(0);setPainting(false);setUsedBtns(new Set());setLeakFound(false);setCarlosPos({x:300,y:320});setCarlosFace("right");setCarlosAct("idle");setYiwenAct("camera");setShowBefore(true);converse([{who:"carlos",text:"Ready to transform this room!"},{who:"michael",text:"I brought every tool we need."},{who:"yiwen",text:"This is going to look amazing!"}]);break;
+    }
+  },[converse]);
+
+  // ── Keyboard ─────────────────────────────────────────────────────────────────
   useEffect(()=>{
     const d=e=>{
       keysRef.current[e.key.toLowerCase()]=true;
-      if(e.key===" "&&!spaceUsedRef.current){
-        spaceUsedRef.current=true;
-        // get current nearItem from state via ref trick
-        setNearItem(ni=>{
-          if(ni) handleItem(ni);
-          return ni;
-        });
-      }
+      if(e.key===" "&&!spaceUsedRef.current){spaceUsedRef.current=true;handleItem(nearItemRef.current);}
     };
-    const u=e=>{
-      keysRef.current[e.key.toLowerCase()]=false;
-      if(e.key===" ")spaceUsedRef.current=false;
-    };
+    const u=e=>{keysRef.current[e.key.toLowerCase()]=false;if(e.key===" ")spaceUsedRef.current=false;};
     window.addEventListener("keydown",d);window.addEventListener("keyup",u);
     return()=>{window.removeEventListener("keydown",d);window.removeEventListener("keyup",u);};
-  },[]);// eslint-disable-line
+  },[handleItem]);
 
-  // game loop
+  // ── Touch joystick ────────────────────────────────────────────────────────────
+  const getCanvasScale=()=>{
+    const c=canvasRef.current;if(!c)return{sx:1,sy:1};
+    return{sx:W/c.getBoundingClientRect().width,sy:H/c.getBoundingClientRect().height};
+  };
+
+  useEffect(()=>{
+    const canvas=canvasRef.current;if(!canvas)return;
+    const onStart=e=>{
+      e.preventDefault();
+      const rect=canvas.getBoundingClientRect();
+      const sc=getCanvasScale();
+      Array.from(e.changedTouches).forEach(t=>{
+        const cx=(t.clientX-rect.left)*sc.sx;
+        const cy=(t.clientY-rect.top)*sc.sy;
+        // check if touching near an item (action tap on right side or item tap)
+        const items=getItems(chapterRef.current,leakFoundRef.current);
+        let hitItem=null;
+        items.forEach(item=>{
+          if(usedBtns.has(item.id)&&!["before_after","speaker","play_again"].includes(item.id))return;
+          const dist=Math.sqrt((cx-item.x)**2+(cy-item.y)**2);
+          if(dist<item.r+20)hitItem=item.id;
+        });
+        if(hitItem){handleItem(hitItem);return;}
+        // joystick
+        if(!joystickRef.current.active){
+          joystickRef.current={active:true,baseX:cx,baseY:cy,dx:0,dy:0,id:t.identifier};
+          setJoyRender({active:true,bx:cx,by:cy,sx:cx,sy:cy});
+        }
+      });
+    };
+    const onMove=e=>{
+      e.preventDefault();
+      const rect=canvas.getBoundingClientRect();
+      const sc=getCanvasScale();
+      Array.from(e.changedTouches).forEach(t=>{
+        if(t.identifier===joystickRef.current.id){
+          const cx=(t.clientX-rect.left)*sc.sx;
+          const cy=(t.clientY-rect.top)*sc.sy;
+          const dx=cx-joystickRef.current.baseX;
+          const dy=cy-joystickRef.current.baseY;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          const max=60;
+          const clamp=dist>max?max/dist:1;
+          joystickRef.current.dx=dx*clamp;
+          joystickRef.current.dy=dy*clamp;
+          setJoyRender({active:true,bx:joystickRef.current.baseX,by:joystickRef.current.baseY,sx:joystickRef.current.baseX+dx*clamp,sy:joystickRef.current.baseY+dy*clamp});
+        }
+      });
+    };
+    const onEnd=e=>{
+      e.preventDefault();
+      Array.from(e.changedTouches).forEach(t=>{
+        if(t.identifier===joystickRef.current.id){
+          joystickRef.current={active:false,baseX:0,baseY:0,dx:0,dy:0,id:null};
+          setJoyRender({active:false,bx:0,by:0,sx:0,sy:0});
+        }
+      });
+    };
+    canvas.addEventListener("touchstart",onStart,{passive:false});
+    canvas.addEventListener("touchmove",onMove,{passive:false});
+    canvas.addEventListener("touchend",onEnd,{passive:false});
+    canvas.addEventListener("touchcancel",onEnd,{passive:false});
+    return()=>{
+      canvas.removeEventListener("touchstart",onStart);
+      canvas.removeEventListener("touchmove",onMove);
+      canvas.removeEventListener("touchend",onEnd);
+      canvas.removeEventListener("touchcancel",onEnd);
+    };
+  },[handleItem,usedBtns]);
+
+  // ── Paint progress ────────────────────────────────────────────────────────────
+  useEffect(()=>{
+    if(!painting)return;
+    const iv=setInterval(()=>{
+      setPaintPct(p=>{
+        const n=Math.min(100,p+1.8);
+        if(n>=100){clearInterval(iv);setPainting(false);setCarlosAct("idle");setChapter("painted");setShowBefore(false);converse([{who:"carlos",text:"We did it! Walls look incredible!"},{who:"michael",text:"My rollers never let me down."},{who:"yiwen",text:"Taking photos for the memories!"}]);setYiwenAct("camera");}
+        return n;
+      });
+    },100);
+    return()=>clearInterval(iv);
+  },[painting,converse]);
+
+  // ── Game loop ─────────────────────────────────────────────────────────────────
   useEffect(()=>{
     let last=0;
     const loop=ts=>{
       if(ts-last>28){
         last=ts;setTick(t=>t+1);
         setCarlosPos(prev=>{
-          const k=keysRef.current;let{x,y}=prev;const sp=4;
+          const k=keysRef.current;
+          const joy=joystickRef.current;
+          let{x,y}=prev;const sp=4;
+          // keyboard
           if(k["arrowleft"]||k["a"]){x=Math.max(10,x-sp);setCarlosFace("left");}
           if(k["arrowright"]||k["d"]){x=Math.min(W-56,x+sp);setCarlosFace("right");}
-          if(k["arrowup"]||k["w"])y=Math.max(100,y-sp);
-          if(k["arrowdown"]||k["s"])y=Math.min(H-100,y+sp);
-          // followers lag behind Carlos (offset behind him)
+          if(k["arrowup"]||k["w"])y=Math.max(130,y-sp);
+          if(k["arrowdown"]||k["s"])y=Math.min(H-95,y+sp);
+          // joystick
+          if(joy.active){
+            const jspd=5;
+            const nx=x+joy.dx/60*jspd*4;
+            const ny=y+joy.dy/60*jspd*4;
+            if(joy.dx<-10){setCarlosFace("left");}else if(joy.dx>10){setCarlosFace("right");}
+            x=Math.max(10,Math.min(W-56,nx));
+            y=Math.max(130,Math.min(H-95,ny));
+          }
           setCarlosFace(f=>{
             const dir=f==="right"?-1:1;
-            michaelTargetRef.current={x:Math.max(10,Math.min(W-56,x+dir*52)),y:Math.max(105,Math.min(H-95,y+14))};
-            yiwenTargetRef.current= {x:Math.max(10,Math.min(W-56,x+dir*80)),y:Math.max(105,Math.min(H-95,y+18))};
+            michaelTargetRef.current={x:Math.max(10,Math.min(W-56,x+dir*52)),y:Math.max(135,Math.min(H-95,y+14))};
+            yiwenTargetRef.current= {x:Math.max(10,Math.min(W-56,x+dir*80)),y:Math.max(135,Math.min(H-95,y+18))};
             return f;
           });
-          setMichaelPos(mp=>({x:mp.x+(michaelTargetRef.current.x-mp.x)*0.12, y:mp.y+(michaelTargetRef.current.y-mp.y)*0.12}));
-          setYiwenPos(yp=>({x:yp.x+(yiwenTargetRef.current.x-yp.x)*0.09,   y:yp.y+(yiwenTargetRef.current.y-yp.y)*0.09}));
-          return{x,y};
-        });
-        // proximity check
-        setCarlosPos(pos=>{
-          setChapter(ch=>{
-            setLeakFound(lf=>{
-              const items=getItems(ch,lf);
-              let found=null;
-              items.forEach(item=>{
-                const dist=Math.sqrt((pos.x+19-item.x)**2+(pos.y+35-item.y)**2);
-                if(dist<75)found=item.id;
-              });
-              setNearItem(found);
-              return lf;
-            });
-            return ch;
+          setMichaelPos(mp=>({x:mp.x+(michaelTargetRef.current.x-mp.x)*0.12,y:mp.y+(michaelTargetRef.current.y-mp.y)*0.12}));
+          setYiwenPos(yp=>({x:yp.x+(yiwenTargetRef.current.x-yp.x)*0.09,y:yp.y+(yiwenTargetRef.current.y-yp.y)*0.09}));
+          // proximity
+          const items=getItems(chapterRef.current,leakFoundRef.current);
+          let found=null;
+          items.forEach(item=>{
+            if(usedBtns.has(item.id)&&!["before_after","speaker","play_again"].includes(item.id))return;
+            const dist=Math.sqrt((x+19-item.x)**2+(y+35-item.y)**2);
+            if(dist<75)found=item.id;
           });
-          return pos;
+          setNearItem(found);nearItemRef.current=found;
+          return{x,y};
         });
       }
       animRef.current=requestAnimationFrame(loop);
     };
     animRef.current=requestAnimationFrame(loop);
     return()=>cancelAnimationFrame(animRef.current);
-  },[]);
+  },[usedBtns]);
 
-  // paint progress
-  useEffect(()=>{
-    if(!painting)return;
-    const iv=setInterval(()=>{
-      setPaintPct(p=>{
-        const n=Math.min(100,p+1.8);
-        if(n>=100){
-          clearInterval(iv);setPainting(false);setCarlosAct("idle");
-          setChapter("painted");setShowBefore(false);
-          converse([{who:"carlos",text:"We did it! Walls look incredible!"},{who:"michael",text:"My rollers never let me down."},{who:"yiwen",text:"Taking photos for the memories!"}]);
-          setYiwenAct("camera");
-        }
-        return n;
-      });
-    },100);
-    return()=>clearInterval(iv);
-  },[painting]);
-
-  const handleItem=id=>{
-    setUsedBtns(prev=>new Set([...prev,id]));
-    switch(id){
-      case "paint_can":
-        setCarlosAct("painting");setPainting(true);
-        converse([{who:"carlos",text:"Alright! Walls won't paint themselves!"},{who:"michael",text:"I have three extra rollers ready!"},{who:"yiwen",text:"I will do the touch-ups perfectly!"}]);
-        break;
-      case "speaker":
-        converse([{who:"carlos",text:"Santana makes me unstoppable!"},{who:"michael",text:"Everyone works faster with this!"},{who:"yiwen",text:"I am dancing AND working!"}]);
-        break;
-      case "phone":
-        converse([{who:"carlos",text:"Honey! The room is done! Miss you!"},{who:"michael",text:"He gets +50 energy every time."},{who:"yiwen",text:"Couple goals honestly."}]);
-        setTimeout(()=>{
-          setChapter("leak");setCarlosPos({x:300,y:310});
-          converse([{who:"yiwen",text:"CARLOS! WATER IS DRIPPING DOWN!"},{who:"carlos",text:"Wait... do I hear dripping?"},{who:"michael",text:"I hear something too..."}]);
-          setYiwenAct("detective");
-        },3200);
-        break;
-      case "before_after":
-        setShowBefore(v=>{
-          const next=!v;
-          converse(next
-            ?[{who:"carlos",text:"Remember those orange walls?"},{who:"yiwen",text:"Hard to believe this is the same room!"}]
-            :[{who:"carlos",text:"Look at this transformation!"},{who:"michael",text:"Worth every tool I brought."},{who:"yiwen",text:"Stunning! Before and after!"}]
-          );
-          return next;
-        });
-        break;
-      case "check_toilet":
-        setChapter("investigation");
-        converse([{who:"carlos",text:"Toilet looks completely fine..."},{who:"michael",text:"Water lines clear here."},{who:"yiwen",text:"My theory: NOT the toilet."}]);
-        break;
-      case "check_pipes":
-        setChapter("investigation");
-        converse([{who:"carlos",text:"Pipes seem totally normal..."},{who:"michael",text:"Let me shine all three flashlights."},{who:"yiwen",text:"Hmm. Suspicious pipes though."}]);
-        break;
-      case "check_shower":
-        converse([{who:"carlos",text:"THE TILE! A gap in the shower tile! THAT IS the leak!"},{who:"yiwen",text:"I KNEW it was a mystery!"},{who:"michael",text:"Elementary!"}]);
-        setLeakFound(true);setChapter("boss");setYiwenAct("detective");
-        break;
-      case "pizza":
-        converse([{who:"yiwen",text:"PIZZA BREAK! Energy fully restored!"},{who:"carlos",text:"Back in action!"},{who:"michael",text:"I also brought backup snacks."}]);
-        break;
-      case "dr_pepper":
-        converse([{who:"michael",text:"DIET DR PEPPER! MAXIMUM ENERGY!"},{who:"carlos",text:"Michael is now FULLY CHARGED!"},{who:"yiwen",text:"He is basically vibrating right now."}]);
-        break;
-      case "seal_tile":
-        setCarlosAct("idle");
-        converse([{who:"carlos",text:"Applying tile sealer... done. Leak sealed."},{who:"michael",text:"Perfect repair. As expected."},{who:"yiwen",text:"WE DID IT! Photo for the album!"}]);
-        setYiwenAct("camera");
-        setTimeout(()=>setChapter("victory"),2200);
-        break;
-      case "play_again":
-        setChapter("painting");setPaintPct(0);setPainting(false);
-        setUsedBtns(new Set());setLeakFound(false);
-        setCarlosPos({x:300,y:320});setCarlosFace("right");setCarlosAct("idle");
-        setYiwenAct("camera");setShowBefore(true);
-        converse([{who:"carlos",text:"Ready to transform this room!"},{who:"michael",text:"I brought every tool we need."},{who:"yiwen",text:"This is going to look amazing!"}]);
-        break;
-    }
-  };
-
-  // draw
+  // ── Draw ──────────────────────────────────────────────────────────────────────
   useEffect(()=>{
     const canvas=canvasRef.current;if(!canvas)return;
     const ctx=canvas.getContext("2d");
@@ -545,20 +527,15 @@ function CarlosGame(){
       ctx.fillText(`Painting ${Math.round(paintPct)}%`,W/2,38);
     }
     drawItems(ctx,chapter,usedBtns,leakFound,nearItem);
-    // draw followers first (behind Carlos)
     drawYiwen(ctx,yiwenPos.x,yiwenPos.y,carlosFace,chapter==="investigation"||chapter==="boss"?"detective":yiwenAct);
     drawMichael(ctx,michaelPos.x,michaelPos.y,carlosFace,michaelTool);
     drawCarlos(ctx,carlosPos.x,carlosPos.y,carlosFace,carlosAct);
-
-    // single active bubble only
     if(activeBubble){
       const who=activeBubble.who;
       const px=who==="carlos"?carlosPos.x+18:who==="michael"?michaelPos.x+11:yiwenPos.x+10;
       const py=who==="carlos"?carlosPos.y+5:who==="michael"?michaelPos.y+5:yiwenPos.y+5;
-      const side=who==="yiwen"?"left":"right";
-      drawBubble(ctx,px,py,activeBubble.text,side);
+      drawBubble(ctx,px,py,activeBubble.text,who==="yiwen"?"left":"right");
     }
-
     if(chapter==="victory"){
       ctx.fillStyle="rgba(0,0,0,0.38)";ctx.fillRect(0,0,W,H);
       ctx.fillStyle="#f0d060";ctx.font="bold 42px Arial";ctx.textAlign="center";
@@ -567,18 +544,20 @@ function CarlosGame(){
       ctx.fillText("Leak sealed! House saved!",W/2,H/2);
       ctx.fillText("🍕 Pizza  🎸 Santana  🏆 Victory!",W/2,H/2+44);
     }
+    // joystick
+    drawJoystick(ctx,{x:joyRender.bx,y:joyRender.by},{x:joyRender.sx,y:joyRender.sy},joyRender.active);
     // hint bar
     ctx.fillStyle="rgba(0,0,0,0.55)";ctx.fillRect(0,H-22,W,22);
     ctx.fillStyle="#f0d060";ctx.font="11px Arial";ctx.textAlign="center";
-    const hint=nearItem?"Press SPACE to interact!":"Move with Arrow Keys / WASD · Walk up to items and press SPACE";
+    const hint=nearItem?"Walk close & press SPACE or TAP item to interact":"Arrow Keys/WASD to move · Touch screen to use joystick · Tap items directly";
     ctx.fillText(hint,W/2,H-8);
-  },[tick,chapter,carlosPos,carlosFace,carlosAct,activeBubble,paintPct,showBefore,usedBtns,leakFound,nearItem,yiwenAct,michaelTool,yiwenPos,michaelPos]);
+  },[tick,chapter,carlosPos,carlosFace,carlosAct,activeBubble,paintPct,showBefore,usedBtns,leakFound,nearItem,yiwenAct,michaelTool,yiwenPos,michaelPos,joyRender]);
 
   return(
-    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,width:"100%",maxWidth:820}}>
       <div style={{color:"#f0d060",fontSize:18,fontWeight:700,letterSpacing:1,textAlign:"center"}}>Carlos Home Improvement</div>
-      <div style={{border:"3px solid #f0d060",borderRadius:12,overflow:"hidden",boxShadow:"0 0 32px rgba(240,208,96,0.2)"}}>
-        <canvas ref={canvasRef} width={W} height={H} style={{display:"block",maxWidth:"100%"}}/>
+      <div style={{border:"3px solid #f0d060",borderRadius:12,overflow:"hidden",boxShadow:"0 0 32px rgba(240,208,96,0.2)",width:"100%"}}>
+        <canvas ref={canvasRef} width={W} height={H} style={{display:"block",width:"100%",height:"auto"}}/>
       </div>
       <div style={{color:"#8888aa",fontSize:12,textAlign:"center"}}>
         {chapter==="painting"&&"Chapter 1 — The Projector Room"}
