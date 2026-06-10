@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carlos Home Improvement</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111318;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      padding: 12px;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    const W = 800, H = 460;
+
+    // ─── Draw Carlos ────────────────────────────────────────────────────────────
+    function drawCarlos(ctx, x, y, facing, action) {
+      ctx.save();
+      if (facing === "left") { ctx.translate(x * 2 + 36, 0); ctx.scale(-1, 1); }
+      ctx.fillStyle = "rgba(0,0,0,0.13)";
+      ctx.beginPath(); ctx.ellipse(x+18,y+68,17,5,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#3d2b1a";
+      ctx.beginPath(); ctx.roundRect(x+4,y+59,14,8,[3,6,2,2]); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+20,y+59,14,8,[3,6,2,2]); ctx.fill();
+      ctx.fillStyle = "#4a4a4a";
+      ctx.beginPath(); ctx.roundRect(x+6,y+39,11,23,2); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+19,y+39,11,23,2); ctx.fill();
+      ctx.fillStyle = "#2a1a0a"; ctx.fillRect(x+5,y+37,28,4);
+      ctx.fillStyle = "#c8a020"; ctx.fillRect(x+15,y+37,8,4);
+      ctx.fillStyle = "#2c3e50";
+      ctx.beginPath(); ctx.roundRect(x+3,y+18,32,22,5); ctx.fill();
+      ctx.fillStyle = "#1a252f";
+      ctx.beginPath(); ctx.moveTo(x+15,y+18); ctx.lineTo(x+19,y+28); ctx.lineTo(x+23,y+18); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#2c3e50";
+      ctx.beginPath(); ctx.roundRect(x-3,y+18,9,22,4); ctx.fill();
+      if (action === "painting") { ctx.beginPath(); ctx.roundRect(x+30,y+10,9,22,4); ctx.fill(); }
+      else { ctx.beginPath(); ctx.roundRect(x+30,y+18,9,22,4); ctx.fill(); }
+      ctx.fillStyle = "#d4a055";
+      ctx.beginPath(); ctx.arc(x+1,y+41,5,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+35,action==="painting"?y+32:y+41,5,0,Math.PI*2); ctx.fill();
+      if (action === "painting") {
+        ctx.fillStyle = "#777"; ctx.fillRect(x+35,y+12,4,22);
+        ctx.fillStyle = "#aaccff"; ctx.beginPath(); ctx.roundRect(x+30,y+10,14,8,3); ctx.fill();
+      }
+      ctx.fillStyle = "#d4a055"; ctx.beginPath(); ctx.roundRect(x+14,y+11,10,9,2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+19,y+8,13,13,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "rgba(80,45,15,0.22)"; ctx.beginPath(); ctx.ellipse(x+19,y+14,8,4,0,0,Math.PI); ctx.fill();
+      ctx.fillStyle = "#2a1a0a"; ctx.beginPath(); ctx.ellipse(x+19,y+2,12,7,0,Math.PI,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#8a9098"; ctx.beginPath(); ctx.ellipse(x+19,y-2,14,8,0,Math.PI,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+19,y-2,14,5,0,0,Math.PI); ctx.fill();
+      ctx.fillStyle = "#6a7078"; ctx.beginPath(); ctx.ellipse(x+23,y+3,10,3,0.3,0,Math.PI); ctx.fill();
+      ctx.fillStyle = "#555"; ctx.beginPath(); ctx.arc(x+19,y-9,2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#ddd"; ctx.font = "bold 8px Arial"; ctx.textAlign = "center";
+      ctx.fillText("C", x+19, y+1);
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.ellipse(x+14,y+8,3.2,3.2,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+24,y+8,3.2,3.2,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#3a2a0a";
+      ctx.beginPath(); ctx.arc(x+15,y+8,2,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+25,y+8,2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(x+15.8,y+7,0.7,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+25.8,y+7,0.7,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "#3a2a0a"; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.arc(x+19,y+10,6,0.3,Math.PI-0.3); ctx.stroke();
+      ctx.restore();
+    }
+
+    // ─── Draw Michael ───────────────────────────────────────────────────────────
+    function drawMichael(ctx, x, y, facing, action) {
+      ctx.save();
+      if (facing === "left") { ctx.translate(x*2+30,0); ctx.scale(-1,1); }
+      ctx.fillStyle = "rgba(0,0,0,0.13)"; ctx.beginPath(); ctx.ellipse(x+15,y+66,14,4,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#1a1a1a";
+      ctx.beginPath(); ctx.roundRect(x+3,y+58,12,8,[3,6,2,2]); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+18,y+58,12,8,[3,6,2,2]); ctx.fill();
+      ctx.fillStyle = "#1a1a2e";
+      ctx.beginPath(); ctx.roundRect(x+4,y+37,10,25,2); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+17,y+37,10,25,2); ctx.fill();
+      ctx.fillStyle = "#1c1c1c"; ctx.beginPath(); ctx.roundRect(x+2,y+16,28,23,5); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x-3,y+16,8,24,4); ctx.fill();
+      if (action==="flashlight") { ctx.beginPath(); ctx.roundRect(x+27,y+10,8,20,4); ctx.fill(); }
+      else { ctx.beginPath(); ctx.roundRect(x+27,y+16,8,24,4); ctx.fill(); }
+      ctx.fillStyle = "#e8c090";
+      ctx.beginPath(); ctx.arc(x+1,y+41,5,0,Math.PI*2); ctx.fill();
+      const hry = action==="flashlight"?y+30:y+41;
+      ctx.beginPath(); ctx.arc(x+31,hry,5,0,Math.PI*2); ctx.fill();
+      if (action==="flashlight") {
+        ctx.fillStyle = "#666"; ctx.fillRect(x+31,y+14,6,18);
+        ctx.fillStyle = "#ffff99"; ctx.beginPath(); ctx.arc(x+34,y+14,6,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,160,0.15)";
+        ctx.beginPath(); ctx.moveTo(x+28,y+10); ctx.lineTo(x-20,y-20); ctx.lineTo(x+80,y-20); ctx.closePath(); ctx.fill();
+      }
+      ctx.fillStyle = "#e8c090"; ctx.beginPath(); ctx.roundRect(x+11,y+10,9,8,2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+16,y+6,13,15,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#111";
+      ctx.beginPath();
+      ctx.moveTo(x+3,y+0); ctx.quadraticCurveTo(x+4,y-12,x+16,y-12);
+      ctx.quadraticCurveTo(x+28,y-10,x+29,y+2); ctx.lineTo(x+25,y+5);
+      ctx.quadraticCurveTo(x+22,y-3,x+16,y-4); ctx.quadraticCurveTo(x+7,y-2,x+5,y+5); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x+10,y-10); ctx.quadraticCurveTo(x+13,y-18,x+18,y-10); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x+20,y-11); ctx.quadraticCurveTo(x+24,y-17,x+26,y-8); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.ellipse(x+11,y+7,3.5,3.5,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+21,y+7,3.5,3.5,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#2a4a8a";
+      ctx.beginPath(); ctx.arc(x+12,y+7,2.2,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+22,y+7,2.2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(x+12.8,y+6,0.7,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+22.8,y+6,0.7,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "#c8a070"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(x+16,y+11,3,0.6,Math.PI-0.6); ctx.stroke();
+      ctx.strokeStyle = "#8a5a3a"; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.arc(x+16,y+14,5,0.3,Math.PI-0.3); ctx.stroke();
+      ctx.restore();
+    }
+
+    // ─── Draw Yiwen (no mask) ───────────────────────────────────────────────────
+    function drawYiwen(ctx, x, y, facing, action) {
+      ctx.save();
+      if (facing==="left") { ctx.translate(x*2+28,0); ctx.scale(-1,1); }
+      ctx.fillStyle = "rgba(0,0,0,0.13)"; ctx.beginPath(); ctx.ellipse(x+14,y+64,13,4,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#1a1a1a";
+      ctx.beginPath(); ctx.roundRect(x+2,y+56,11,8,[3,6,2,2]); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+15,y+56,11,8,[3,6,2,2]); ctx.fill();
+      ctx.fillStyle = "#2a4a7a";
+      ctx.beginPath(); ctx.roundRect(x+3,y+36,10,23,2); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(x+15,y+36,10,23,2); ctx.fill();
+      ctx.fillStyle = "#5a6a3a"; ctx.beginPath(); ctx.roundRect(x+1,y+15,27,23,5); ctx.fill();
+      ctx.fillStyle = "#4a5a2a";
+      ctx.beginPath(); ctx.moveTo(x+10,y+15); ctx.lineTo(x+14,y+27); ctx.lineTo(x+19,y+15); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#5a6a3a";
+      ctx.beginPath(); ctx.roundRect(x-3,y+15,7,22,4); ctx.fill();
+      if (action==="camera") { ctx.beginPath(); ctx.roundRect(x+25,y+8,7,18,4); ctx.fill(); }
+      else { ctx.beginPath(); ctx.roundRect(x+25,y+15,7,22,4); ctx.fill(); }
+      ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x-1,y+38,5,0,Math.PI*2); ctx.fill();
+      if (action==="camera") {
+        ctx.fillStyle = "#333"; ctx.beginPath(); ctx.roundRect(x+23,y+4,17,12,3); ctx.fill();
+        ctx.fillStyle = "#7799bb"; ctx.beginPath(); ctx.arc(x+31,y+10,4,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x+31,y+10,1.5,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+28,y+27,5,0,Math.PI*2); ctx.fill();
+      } else {
+        ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+28,y+38,5,0,Math.PI*2); ctx.fill();
+      }
+      if (action==="detective") {
+        ctx.fillStyle = "#3a2a1a"; ctx.beginPath(); ctx.roundRect(x+3,y-9,22,10,3); ctx.fill();
+        ctx.fillStyle = "#2a1a0a"; ctx.fillRect(x-1,y,30,4);
+        ctx.fillStyle = "#c8a020"; ctx.fillRect(x+6,y-4,16,3);
+      }
+      ctx.fillStyle = "#c87a50"; ctx.beginPath(); ctx.roundRect(x+9,y+9,9,8,2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+14,y+5,12,13,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#111";
+      ctx.beginPath();
+      ctx.moveTo(x+2,y+5); ctx.quadraticCurveTo(x+2,y-9,x+14,y-10);
+      ctx.quadraticCurveTo(x+26,y-7,x+26,y+6); ctx.quadraticCurveTo(x+22,y+2,x+20,y+14);
+      ctx.lineTo(x+17,y+12); ctx.quadraticCurveTo(x+21,y,x+20,y-3);
+      ctx.quadraticCurveTo(x+14,y-5,x+5,y+2); ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x+2,y+3); ctx.quadraticCurveTo(x-2,y+10,x,y+20);
+      ctx.quadraticCurveTo(x+3,y+24,x+6,y+20); ctx.quadraticCurveTo(x+4,y+13,x+4,y+7); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.ellipse(x+9,y+5,3.5,3.8,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+19,y+5,3.5,3.8,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#2a1a0a";
+      ctx.beginPath(); ctx.arc(x+10,y+5,2.4,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+20,y+5,2.4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(x+10.8,y+4,0.8,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+20.8,y+4,0.8,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "#a06040"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(x+14,y+10,3,0.5,Math.PI-0.5); ctx.stroke();
+      ctx.strokeStyle = "#8a4a2a"; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.arc(x+14,y+13,5.5,0.25,Math.PI-0.25); ctx.stroke();
+      ctx.fillStyle = "rgba(220,120,80,0.22)";
+      ctx.beginPath(); ctx.ellipse(x+7,y+13,4,2.5,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x+21,y+13,4,2.5,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    // ─── Speech Bubble ──────────────────────────────────────────────────────────
+    function drawBubble(ctx, cx, cy, text, side) {
+      if (!text) return;
+      ctx.save();
+      ctx.font = "12px Arial";
+      const maxW = 160;
+      const words = text.split(" ");
+      const lines = []; let cur = "";
+      words.forEach(w => {
+        const t = cur ? cur+" "+w : w;
+        if (ctx.measureText(t).width > maxW) { lines.push(cur); cur = w; } else cur = t;
+      });
+      if (cur) lines.push(cur);
+      const lh = 16, pad = 10;
+      const bw = Math.min(maxW+pad*2, Math.max(...lines.map(l=>ctx.measureText(l).width))+pad*2);
+      const bh = lines.length*lh+pad*2;
+      const bx = side==="right" ? cx+16 : cx-bw-16;
+      const by = cy-bh-14;
+      const finalBx = Math.max(4, Math.min(W-bw-4, bx));
+      const finalBy = Math.max(4, by);
+      ctx.fillStyle = "#fffef0"; ctx.strokeStyle = "#ccc"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(finalBx,finalBy,bw,bh,8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#fffef0";
+      ctx.beginPath();
+      if (side==="right") {
+        ctx.moveTo(finalBx+4,finalBy+bh); ctx.lineTo(cx+12,cy-4); ctx.lineTo(finalBx+18,finalBy+bh);
+      } else {
+        ctx.moveTo(finalBx+bw-4,finalBy+bh); ctx.lineTo(cx+4,cy-4); ctx.lineTo(finalBx+bw-18,finalBy+bh);
+      }
+      ctx.fill();
+      ctx.strokeStyle = "#ccc"; ctx.lineWidth = 1;
+      if (side==="right") {
+        ctx.beginPath(); ctx.moveTo(finalBx+4,finalBy+bh+1); ctx.lineTo(cx+12,cy-3); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx+12,cy-3); ctx.lineTo(finalBx+18,finalBy+bh+1); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(finalBx+bw-4,finalBy+bh+1); ctx.lineTo(cx+4,cy-3); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx+4,cy-3); ctx.lineTo(finalBx+bw-18,finalBy+bh+1); ctx.stroke();
+      }
+      ctx.fillStyle = "#222"; ctx.font = "12px Arial"; ctx.textAlign = "left";
+      lines.forEach((line,i) => ctx.fillText(line, finalBx+pad, finalBy+pad+12+i*lh));
+      ctx.restore();
+    }
+
+    // ─── Rooms ──────────────────────────────────────────────────────────────────
+    function drawOrangeRoom(ctx) {
+      ctx.fillStyle = "#e8a060"; ctx.fillRect(0,0,W,H-80);
+      ctx.strokeStyle = "rgba(200,130,60,0.25)"; ctx.lineWidth = 1;
+      for (let y=50;y<H-90;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      ctx.fillStyle = "#7a5a3a"; ctx.fillRect(0,H-80,W,80);
+      for (let i=0;i<W;i+=90){ctx.strokeStyle="#6a4a2a";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i,H-80);ctx.lineTo(i,H);ctx.stroke();}
+      ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.roundRect(260,55,280,170,8); ctx.fill();
+      ctx.fillStyle = "#111"; ctx.beginPath(); ctx.roundRect(268,63,264,154,4); ctx.fill();
+      ctx.strokeStyle = "#9a7a5a"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(100,H-80); ctx.lineTo(80,180); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(140,H-80); ctx.lineTo(155,180); ctx.stroke();
+      for (let ly=200;ly<H-80;ly+=55){ctx.beginPath();ctx.moveTo(84+(ly-180)*0.2,ly);ctx.lineTo(152-(ly-180)*0.08,ly);ctx.stroke();}
+      ctx.fillStyle = "#555"; ctx.beginPath(); ctx.roundRect(60,H-92,30,25,3); ctx.fill();
+      ctx.fillStyle = "#88aaff"; ctx.fillRect(62,H-88,26,18);
+      ctx.strokeStyle = "#888"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(66,H-92); ctx.quadraticCurveTo(75,H-102,84,H-92); ctx.stroke();
+    }
+
+    function drawWhiteRoom(ctx) {
+      ctx.fillStyle = "#5c3d1a"; ctx.fillRect(0,0,260,H-80);
+      ctx.fillStyle = "#f2ede4"; ctx.fillRect(260,0,W-260,H-80);
+      ctx.fillStyle = "#e0dbd0"; ctx.fillRect(260,H-86,W-260,5);
+      ctx.fillStyle = "#4a3010"; ctx.fillRect(0,H-86,260,5);
+      ctx.fillStyle = "#c8a878"; ctx.fillRect(0,H-80,W,80);
+      for (let i=0;i<W;i+=100){ctx.strokeStyle="rgba(160,120,60,0.35)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i,H-80);ctx.lineTo(i,H);ctx.stroke();}
+      ctx.fillStyle = "#2a1506"; ctx.beginPath(); ctx.roundRect(18,65,220,150,8); ctx.fill();
+      ctx.fillStyle = "#080808"; ctx.beginPath(); ctx.roundRect(25,72,206,136,4); ctx.fill();
+      ctx.fillStyle = "#88aacc"; ctx.beginPath(); ctx.roundRect(560,70,130,110,5); ctx.fill();
+      ctx.fillStyle = "#6688aa"; ctx.fillRect(558,120,134,4); ctx.fillRect(620,68,4,114);
+      ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(568,80,44,32);
+      ctx.fillStyle = "#2a1a0a"; ctx.beginPath(); ctx.roundRect(660,110,130,170,8); ctx.fill();
+      ctx.fillStyle = "#111"; ctx.beginPath(); ctx.roundRect(675,125,100,130,4); ctx.fill();
+      ctx.fillStyle = "rgba(255,80,0,0.85)";
+      for(let fi=0;fi<4;fi++){ctx.beginPath();ctx.ellipse(700+fi*14,H-95-fi*6,10,18,0,0,Math.PI*2);ctx.fill();}
+    }
+
+    function drawBathroom(ctx) {
+      ctx.fillStyle = "#eaeef0"; ctx.fillRect(0,0,W,H-80);
+      ctx.strokeStyle = "#c8d4d8"; ctx.lineWidth = 0.8;
+      for(let tx=0;tx<W;tx+=50){ctx.beginPath();ctx.moveTo(tx,0);ctx.lineTo(tx,H-80);ctx.stroke();}
+      for(let ty=0;ty<H-80;ty+=50){ctx.beginPath();ctx.moveTo(0,ty);ctx.lineTo(W,ty);ctx.stroke();}
+      ctx.fillStyle = "#d2cabb"; ctx.fillRect(0,H-80,W,80);
+      ctx.strokeStyle = "#b8b0a0"; ctx.lineWidth = 0.8;
+      for(let fx=0;fx<W;fx+=65){ctx.beginPath();ctx.moveTo(fx,H-80);ctx.lineTo(fx,H);ctx.stroke();}
+      ctx.fillStyle = "#f2f2f0";
+      ctx.beginPath(); ctx.ellipse(150,H-130,42,55,0,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "#ccc"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#e6e6e4";
+      ctx.beginPath(); ctx.ellipse(150,H-152,30,22,0,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "#ccc"; ctx.stroke();
+      ctx.fillStyle = "#999"; ctx.font = "bold 11px Arial"; ctx.textAlign = "center";
+      ctx.fillText("TOILET",150,H-76);
+      ctx.fillStyle = "#d4d0c8"; ctx.beginPath(); ctx.roundRect(320,H-190,90,70,6); ctx.fill();
+      ctx.strokeStyle = "#b8b4aa"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#bbb"; ctx.fillRect(342,H-122,12,44); ctx.fillRect(372,H-122,12,44);
+      ctx.fillStyle = "#888"; ctx.fillRect(332,H-126,42,8);
+      ctx.fillStyle = "#999"; ctx.font = "bold 11px Arial"; ctx.textAlign = "center";
+      ctx.fillText("PIPES",365,H-76);
+      ctx.fillStyle = "#c2d8dc"; ctx.beginPath(); ctx.roundRect(490,50,270,310,10); ctx.fill();
+      ctx.strokeStyle = "#9ab8bc"; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = "rgba(180,205,210,0.55)"; ctx.lineWidth = 0.8;
+      for(let sx=498;sx<752;sx+=44){ctx.beginPath();ctx.moveTo(sx,58);ctx.lineTo(sx,352);ctx.stroke();}
+      for(let sy=58;sy<352;sy+=44){ctx.beginPath();ctx.moveTo(498,sy);ctx.lineTo(752,sy);ctx.stroke();}
+      ctx.fillStyle = "#888"; ctx.fillRect(598,64,8,44);
+      ctx.beginPath(); ctx.ellipse(602,64,22,8,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#999"; ctx.font = "bold 11px Arial"; ctx.textAlign = "center";
+      ctx.fillText("SHOWER",625,370);
+    }
+
+    function drawLeakDrops(ctx, t) {
+      [140,360,560].forEach((x,i) => {
+        const dropY = ((t*70+i*90)%230)+40;
+        ctx.fillStyle = "#4488bb";
+        ctx.beginPath(); ctx.arc(x,dropY,5,0,Math.PI*2); ctx.fill();
+        if (dropY>220) {
+          ctx.strokeStyle = "rgba(68,136,187,0.35)"; ctx.lineWidth = 1;
+          const r=(dropY-220)*0.35;
+          ctx.beginPath(); ctx.ellipse(x,260,r,r*0.35,0,0,Math.PI*2); ctx.stroke();
+        }
+      });
+    }
+
+    // ─── Button config ──────────────────────────────────────────────────────────
+    const STEPS = {
+      painting:      [{id:"start_paint",label:"🎨 Start Painting"},{id:"santana",label:"🎸 Play Santana"},{id:"wife_call",label:"💕 Call Wife"}],
+      painted:       [{id:"toggle_room",label:"🔀 Before / After"},{id:"celebrate",label:"🎉 Celebrate!"},{id:"wife_call2",label:"💕 Call Wife (continue →)"}],
+      leak:          [{id:"check_toilet",label:"🚽 Check Toilet"},{id:"check_pipes",label:"🔧 Check Pipes"},{id:"check_shower",label:"🚿 Check Shower"},{id:"dr_pepper",label:"🥤 Diet Dr Pepper"},{id:"pizza",label:"🍕 Pizza Break"}],
+      investigation: [{id:"check_toilet",label:"🚽 Check Toilet"},{id:"check_pipes",label:"🔧 Check Pipes"},{id:"check_shower",label:"🚿 Check Shower"},{id:"santana2",label:"🎸 Play Santana"},{id:"dr_pepper",label:"🥤 Diet Dr Pepper"}],
+      boss:          [{id:"locked_in",label:"🎯 Locked In!"},{id:"santana3",label:"🎸 Santana Mode"},{id:"seal_tile",label:"🛠️ Seal the Tile!"},{id:"wife_boss",label:"💕 Wife Power"}],
+      victory:       [{id:"play_again",label:"🔄 Play Again"}],
+    };
+
+    const REPEATABLE = new Set(["toggle_room","santana","santana2","santana3","play_again"]);
+
+    // ─── Main Component ─────────────────────────────────────────────────────────
+    function CarlosGame() {
+      const canvasRef = useRef(null);
+      const keysRef   = useRef({});
+      const animRef   = useRef(null);
+
+      const [chapter,    setChapter]    = useState("painting");
+      const [showBefore, setShowBefore] = useState(true);
+      const [paintPct,   setPaintPct]   = useState(0);
+      const [painting,   setPainting]   = useState(false);
+      const [tick,       setTick]       = useState(0);
+      const [usedBtns,   setUsedBtns]   = useState(new Set());
+      const [carlosPos,  setCarlosPos]  = useState({x:300,y:320});
+      const [carlosFace, setCarlosFace] = useState("right");
+      const [carlosAct,  setCarlosAct]  = useState("idle");
+      const [yiwenAct,   setYiwenAct]   = useState("camera");
+      const [michaelPos] = useState({x:560,y:310});
+      const [yiwenPos]   = useState({x:170,y:290});
+      const [bubbles,    setBubbles]    = useState({
+        carlos:"Ready to transform this room!",
+        michael:"I brought every tool we need.",
+        yiwen:"This is going to look amazing!"
+      });
+
+      const say = (carlos,michael,yiwen) => setBubbles({carlos:carlos||null,michael:michael||null,yiwen:yiwen||null});
+
+      useEffect(() => {
+        const d=e=>{keysRef.current[e.key.toLowerCase()]=true;};
+        const u=e=>{keysRef.current[e.key.toLowerCase()]=false;};
+        window.addEventListener("keydown",d); window.addEventListener("keyup",u);
+        return ()=>{window.removeEventListener("keydown",d);window.removeEventListener("keyup",u);};
+      },[]);
+
+      useEffect(() => {
+        let last=0;
+        const loop=ts=>{
+          if(ts-last>28){
+            last=ts; setTick(t=>t+1);
+            setCarlosPos(prev=>{
+              const k=keysRef.current; let{x,y}=prev; const sp=4;
+              if(k["arrowleft"]||k["a"]){x=Math.max(10,x-sp);setCarlosFace("left");}
+              if(k["arrowright"]||k["d"]){x=Math.min(W-56,x+sp);setCarlosFace("right");}
+              if(k["arrowup"]||k["w"])y=Math.max(100,y-sp);
+              if(k["arrowdown"]||k["s"])y=Math.min(H-100,y+sp);
+              return{x,y};
+            });
+          }
+          animRef.current=requestAnimationFrame(loop);
+        };
+        animRef.current=requestAnimationFrame(loop);
+        return ()=>cancelAnimationFrame(animRef.current);
+      },[]);
+
+      useEffect(() => {
+        if (!painting) return;
+        const iv=setInterval(()=>{
+          setPaintPct(p=>{
+            const n=Math.min(100,p+1.8);
+            if(n>=100){
+              clearInterval(iv); setPainting(false); setCarlosAct("idle");
+              setChapter("painted"); setShowBefore(false);
+              say("We did it! Walls look incredible!","My rollers never let me down.","Taking photos for the memories!");
+              setYiwenAct("camera");
+            }
+            return n;
+          });
+        },100);
+        return ()=>clearInterval(iv);
+      },[painting]);
+
+      useEffect(() => {
+        const canvas=canvasRef.current; if(!canvas)return;
+        const ctx=canvas.getContext("2d");
+        ctx.clearRect(0,0,W,H);
+        if(chapter==="painting"){showBefore?drawOrangeRoom(ctx):drawWhiteRoom(ctx);}
+        else if(chapter==="painted"){drawWhiteRoom(ctx);}
+        else if(["leak","investigation","boss"].includes(chapter)){drawBathroom(ctx);drawLeakDrops(ctx,tick*0.04);}
+        else if(chapter==="victory"){drawWhiteRoom(ctx);}
+        if(chapter==="painting"){
+          ctx.fillStyle="rgba(0,0,0,0.5)";ctx.beginPath();ctx.roundRect(W/2-145,18,290,28,14);ctx.fill();
+          const g=ctx.createLinearGradient(W/2-139,0,W/2+139,0);
+          g.addColorStop(0,"#4af");g.addColorStop(1,"#a4f");ctx.fillStyle=g;
+          ctx.beginPath();ctx.roundRect(W/2-139,24,(paintPct/100)*278,16,8);ctx.fill();
+          ctx.fillStyle="#fff";ctx.font="bold 12px Arial";ctx.textAlign="center";
+          ctx.fillText(`Painting ${Math.round(paintPct)}%`,W/2,38);
+        }
+        drawYiwen(ctx,yiwenPos.x,yiwenPos.y,"right",
+          chapter==="investigation"||chapter==="boss"?"detective":yiwenAct);
+        drawMichael(ctx,michaelPos.x,michaelPos.y,"left",
+          chapter==="investigation"||chapter==="boss"?"flashlight":"idle");
+        drawCarlos(ctx,carlosPos.x,carlosPos.y,carlosFace,carlosAct);
+        if(bubbles.yiwen)   drawBubble(ctx,yiwenPos.x+14, yiwenPos.y+5, bubbles.yiwen,  "left");
+        if(bubbles.michael) drawBubble(ctx,michaelPos.x+15,michaelPos.y+5,bubbles.michael,"left");
+        if(bubbles.carlos)  drawBubble(ctx,carlosPos.x+18, carlosPos.y+5, bubbles.carlos, "right");
+        if(["leak","investigation","boss"].includes(chapter)){
+          [{label:"TOILET",x:150,y:H-195,key:"toilet"},{label:"PIPES",x:365,y:H-200,key:"pipes"},{label:"SHOWER",x:625,y:42,key:"shower"}]
+            .forEach(m=>{
+              const done=usedBtns.has("check_"+m.key);
+              ctx.font="bold 12px Arial";ctx.textAlign="center";
+              ctx.fillStyle=done?"#44dd44":"#ffdd22";
+              ctx.fillText(done?"✓ "+m.label:"? "+m.label,m.x,m.y);
+            });
+        }
+        if(chapter==="victory"){
+          ctx.fillStyle="rgba(0,0,0,0.38)";ctx.fillRect(0,0,W,H);
+          ctx.fillStyle="#f0d060";ctx.font="bold 46px Arial";ctx.textAlign="center";
+          ctx.fillText("MISSION COMPLETE!",W/2,H/2-40);
+          ctx.fillStyle="#fff";ctx.font="22px Arial";
+          ctx.fillText("Leak sealed! House saved!",W/2,H/2+10);
+          ctx.fillText("🍕 Pizza  🎸 Santana  🏆 Victory!",W/2,H/2+50);
+        }
+      },[tick,chapter,carlosPos,carlosFace,carlosAct,bubbles,paintPct,showBefore,usedBtns,yiwenAct]);
+
+      const handleBtn = id => {
+        setUsedBtns(prev=>new Set([...prev,id]));
+        switch(id){
+          case "start_paint": setCarlosAct("painting");setPainting(true);say("Let's do this!","I have three extra rollers!","I'll handle the touch-ups!"); break;
+          case "santana":case "santana2":case "santana3": say("Santana makes me unstoppable!","The whole team vibes!","I'm dancing AND working!"); break;
+          case "wife_call":case "wife_boss": say("Honey, the room is DONE! Miss you!","He gets +50 energy every time.","Couple goals honestly."); break;
+          case "wife_call2":
+            say("Honey, the room is DONE! Miss you!","He gets +50 energy every time.","Couple goals honestly.");
+            setTimeout(()=>{
+              setChapter("leak");setCarlosPos({x:300,y:310});
+              say("Wait... do I hear dripping?","I hear something too...","CARLOS! WATER IS DRIPPING FROM UPSTAIRS!");
+              setYiwenAct("detective");
+            },1800); break;
+          case "toggle_room": setShowBefore(v=>!v); say(showBefore?"Look at this transformation!":"Remember those orange walls?", showBefore?"Worth every tool I brought.":"My rollers did that.", showBefore?"Stunning! Selfie time!":"Orange walls who?"); break;
+          case "celebrate": say("Team, we crushed it today!","I have celebratory backup shirts.","Group photo! Get in!"); setYiwenAct("camera"); break;
+          case "check_toilet": say("Toilet looks completely fine...","Water lines clear here.","My theory: NOT the toilet."); break;
+          case "check_pipes": say("Pipes seem totally normal...","Let me shine all three flashlights.","Hmm. Suspicious pipes though."); break;
+          case "check_shower":
+            say("THE TILE! A gap in the shower tile! THAT'S the leak!","Elementary!","I KNEW it was a mystery!");
+            setChapter("boss"); setYiwenAct("detective"); break;
+          case "dr_pepper": say("Michael is POWERED UP!","DIET DR PEPPER! MAXIMUM ENERGY!","He is basically vibrating right now."); break;
+          case "pizza": say("Pizza break — energy restored!","I also brought backup snacks.","YESSS fuel for the detective work!"); break;
+          case "locked_in": setCarlosAct("painting"); say("LOCKED IN. Nothing stops me now.","He gets like this. Just watch.","Focus mode activated!"); break;
+          case "seal_tile":
+            setCarlosAct("idle");
+            say("Applying tile sealer... done. Leak sealed.","Perfect repair. As expected.","WE DID IT! Photo for the album!");
+            setYiwenAct("camera");
+            setTimeout(()=>setChapter("victory"),2000); break;
+          case "play_again":
+            setChapter("painting");setPaintPct(0);setPainting(false);setUsedBtns(new Set());
+            setCarlosPos({x:300,y:320});setCarlosFace("right");setCarlosAct("idle");setYiwenAct("camera");setShowBefore(true);
+            say("Ready to transform this room!","I brought every tool we need.","This is going to look amazing!"); break;
+        }
+      };
+
+      const buttons = STEPS[chapter] || [];
+
+      return (
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+          <div style={{color:"#f0d060",fontSize:17,fontWeight:700,letterSpacing:1,textAlign:"center"}}>
+            Carlos Home Improvement
+          </div>
+          <div style={{border:"3px solid #f0d060",borderRadius:12,overflow:"hidden",boxShadow:"0 0 32px rgba(240,208,96,0.18)"}}>
+            <canvas ref={canvasRef} width={W} height={H} style={{display:"block"}} />
+          </div>
+          <div style={{color:"#8888aa",fontSize:12,textAlign:"center"}}>
+            {chapter==="painting"&&"Chapter 1 — The Projector Room"}
+            {chapter==="painted"&&"Chapter 2 — The Calm Before the Storm"}
+            {chapter==="leak"&&"Chapter 3 — The Leak Strikes Back"}
+            {chapter==="investigation"&&"Chapter 4 — Investigation Mode"}
+            {chapter==="boss"&&"Chapter 5 — The Real Culprit Found!"}
+            {chapter==="victory"&&"Chapter 6 — Victory!"}
+            &nbsp;|&nbsp; Move Carlos: Arrow Keys / WASD
+          </div>
+          <div style={{width:W,background:"#1c1e28",border:"2px solid #333555",borderRadius:10,padding:"12px 16px",display:"flex",gap:10,flexWrap:"wrap",alignItems:"center"}}>
+            <span style={{color:"#666888",fontSize:12,marginRight:4,whiteSpace:"nowrap"}}>Take action:</span>
+            {buttons.map(btn=>{
+              const disabled = usedBtns.has(btn.id) && !REPEATABLE.has(btn.id);
+              return (
+                <button key={btn.id} onClick={()=>handleBtn(btn.id)} disabled={disabled}
+                  style={{background:disabled?"#222":"#26283a",border:disabled?"1.5px solid #333":"1.5px solid #5566aa",
+                    borderRadius:8,color:disabled?"#444":"#dde",padding:"9px 16px",
+                    cursor:disabled?"not-allowed":"pointer",fontSize:13,fontWeight:600,
+                    display:"flex",alignItems:"center",gap:6,transition:"all 0.15s"}}>
+                  {btn.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(CarlosGame));
+  </script>
+</body>
+</html>
