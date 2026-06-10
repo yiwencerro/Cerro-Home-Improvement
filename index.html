@@ -232,7 +232,7 @@ function getItems(chapter,leakFound){
     const items=[
       {id:"check_toilet",x:150,y:H-200,emoji:"🚽",label:"Inspect",r:22},
       {id:"check_pipes", x:365,y:H-200,emoji:"🔧",label:"Inspect",r:22},
-      {id:"check_shower",x:630,y:58,   emoji:"🚿",label:"Inspect",r:22},
+      {id:"check_shower",x:620,y:120,  emoji:"🚿",label:"Inspect",r:22},
       {id:"pizza",       x:75, y:190,  emoji:"🍕",label:"Pizza!",  r:20},
       {id:"dr_pepper",   x:75, y:260,  emoji:"🥤",label:"Dr Pepper",r:20},
     ];
@@ -432,7 +432,7 @@ function CarlosGame(){
               let found=null;
               items.forEach(item=>{
                 const dist=Math.sqrt((pos.x+19-item.x)**2+(pos.y+35-item.y)**2);
-                if(dist<60)found=item.id;
+                if(dist<75)found=item.id;
               });
               setNearItem(found);
               return lf;
